@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import numpy_financial as npf
+from datetime import date
 
 
 # Setup Sidebar
@@ -26,10 +28,12 @@ How on earth do you choose? Well, we calculate to see which one makes the most s
 
 ---
 
-## Options
+# Options
 
 ### A: 5-year Fixed, No HTB payment
+
 ### B: 3-year Fixed, 50% HTB payment
+
 ### C: 3-year Fixed, 100% HTB payment
 
 """
@@ -37,16 +41,31 @@ How on earth do you choose? Well, we calculate to see which one makes the most s
 options = {
     "a": {
         "interest_rate": 2.2,
-        "term_length": 5,
-        "HTB_redemption": 0
+        "fixed_term_length": 5,
+        "HTB_redemption_percentage": 0
     },
     "b": {
         "interest_rate": 2.2,
-        "term_length": 5,
-        "HTB_redemption": 0
+        "fixed_term_length": 5,
+        "HTB_redemption_percentage": 0
+    },
+    "c": {
+        "interest_rate": 2.2,
+        "fixed_term_length": 5,
+        "HTB_redemption_percentage": 0
     }
 }
 
-options
+'Options', options
 
-mortgage_remaining
+
+interest = 0.04
+years = 30
+payments_year = 12
+mortgage = 400000
+start_date = (date(2021, 1, 1))
+
+
+pmt = -1 * npf.pmt(interest/12, years*payments_year, mortgage)
+
+"Monthly payment of", pmt

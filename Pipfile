@@ -9,6 +9,7 @@ pylint = "*"
 
 [packages]
 streamlit = "*"
+numpy-financial = "*"
 
 [requires]
 python_version = "3.7"
