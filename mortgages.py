@@ -15,10 +15,37 @@ mortgage_remaining = st.sidebar.number_input(
 term_remaining = st.sidebar.number_input(
     'Term Remaining', value=35, min_value=0)
 
+payments_per_year = st.sidebar.number_input(
+    'Payments per year', value=12, min_value=1)
+
+start_date = st.sidebar.date_input("Start date", value=date(2020, 6, 1))
+
 st.sidebar.markdown("## HTB")
 
 variable_rate = st.sidebar.number_input(
     'Variable Rate after Fixed-term expires', value=6.7, min_value=0.0)
+
+
+# Functions
+def mortgage_df(interest):
+
+    rng = pd.date_range(start_date, periods=term_remaining *
+                        payments_per_year, freq='MS')
+
+    rng.name = "Payment Date"
+
+    df = pd.DataFrame(index=rng, columns=[
+        'Payment', 'Principal Paid', 'Interest Paid', 'Ending Balance'], dtype='float')
+    df.reset_index(inplace=True)
+    df.index += 1
+    df.index.name = "Period"
+
+    df["Payment"] = -1 * npf.pmt(interest/12, term_remaining *
+                                 payments_per_year, mortgage_remaining)
+
+    df["Principal Paid"] = -1 * npf.ppmt(interest/payments_per_year,
+                                         df.index, term_remaining * payments_per_year, mortgage_remaining)
+    return df
 
 
 """
@@ -58,14 +85,27 @@ options = {
 
 'Options', options
 
+"""
+---
+# Option A
+"""
 
-interest = 0.04
-years = 30
-payments_year = 12
-mortgage = 400000
-start_date = (date(2021, 1, 1))
+df_A = mortgage_df(2.22)
+df_A
+
+"""
+---
+# Option B
+"""
+
+df_B = mortgage_df(3.22)
+df_B
 
 
-pmt = -1 * npf.pmt(interest/12, years*payments_year, mortgage)
+"""
+---
+# Option C
+"""
 
-"Monthly payment of", pmt
+df_C = mortgage_df(2.22)
+df_C
